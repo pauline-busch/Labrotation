@@ -1,0 +1,29 @@
+> seq1
+AGTCF
+
+> seq2
+AGCAF
+
+> seq3
+ACCFT
+
+> seq4
+GGTFA
+
+> seq5
+AGCTF
+
+> seq6
+AGTCF
+
+> seq7
+GCTCF
+
+> seq8
+ACTAF
+
+> seq9
+ACTCF
+
+> seq10
+AGCTF

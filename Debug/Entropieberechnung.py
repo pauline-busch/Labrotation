@@ -1,4 +1,5 @@
 import numpy as np
+import time
 import matplotlib.pyplot as plt
 import biotite.sequence as seq
 import biotite.sequence.io.fasta as fasta
@@ -8,6 +9,9 @@ import biotite.application.clustalo as clustalo
 import biotite.database.entrez as entrez
 
 """def _get_entropy(sequences):
+    
+    start = time.time_ns()
+
     alphabet = sequences[0].get_alphabet()
     freq = np.zeros((len(sequences[0].code), len(alphabet)))
 
@@ -23,9 +27,13 @@ import biotite.database.entrez as entrez
         = freq[no_zeros] * np.log2(freq[no_zeros])
     entropies = -np.sum(pre_entropies, axis=1)
     max_entropy = np.log2(len(alphabet))
+
+    end = time.time_ns()
+    print(end - start)
+
     return freq, entropies, max_entropy"""
 
-alignment = fasta.FastaFile.read(r"C:\Users\Rickman\Labrotation\Sequences.txt")
+alignment = fasta.FastaFile.read(r"C:\Users\Rickman\Documents\GitHub\Labrotation\Sequences.txt")
 alignment = fasta.get_alignment(alignment)
 
 
@@ -35,7 +43,7 @@ for seq_str in alignment.get_gapped_sequences():
     print(seq_str)
 
 
-#print(_get_entropy(sequences))
+"""print(_get_entropy(sequences))"""
 
 fig = plt.figure(figsize=(8.0, 3.0))
 ax = fig.add_subplot(111)

@@ -33,7 +33,7 @@ import biotite.database.entrez as entrez
 
     return freq, entropies, max_entropy"""
 
-alignment = fasta.FastaFile.read(r"C:\Users\Rickman\Documents\GitHub\Labrotation\Sequences.txt")
+alignment = fasta.FastaFile.read(r"C:\Users\Rickman\Documents\GitHub\Labrotation\Sequences_mit_Gap.txt")
 alignment = fasta.get_alignment(alignment)
 
 

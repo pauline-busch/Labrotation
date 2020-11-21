@@ -1,0 +1,9 @@
+> seq1
+-GTC
+
+> seq2
+AGCA
+
+> seq3
+ACCF
+

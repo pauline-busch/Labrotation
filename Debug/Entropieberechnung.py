@@ -33,14 +33,12 @@ import biotite.database.entrez as entrez
 
     return freq, entropies, max_entropy"""
 
-alignment = fasta.FastaFile.read(r"C:\Users\Rickman\Documents\GitHub\Labrotation\Sequences_mit_Gap.txt")
+alignment = fasta.FastaFile.read(r"C:\Users\Rickman\Documents\GitHub\Labrotation\alan_sequences_aligned_squashed.txt")
 alignment = fasta.get_alignment(alignment)
+#print(alignment)
 
-
-sequences = []
-for seq_str in alignment.get_gapped_sequences():
-    sequences.append(seq.ProteinSequence(seq_str))
-    print(seq_str)
+"""for seq_str in alignment.get_gapped_sequences():
+    print(seq_str)"""
 
 
 """print(_get_entropy(sequences))"""

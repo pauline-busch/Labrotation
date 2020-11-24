@@ -1,9 +1,9 @@
 > seq1
--GTC
+-GTCF
 
 > seq2
-AGCA
+AG-AF
 
 > seq3
-ACCF
+ACCFF
 

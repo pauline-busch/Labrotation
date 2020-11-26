@@ -72,7 +72,7 @@ print("Binding sites:")
 for site in binding_sites[:20]:
     print(site)
 
-alignment = clustalo.ClustalOmegaApp.align(binding_sites, bin_path=r'C:\Users\Rickman\Documents\GitHub\Labrotation\clustal-omega-1.2.2-win64/clustalo.exe', matrix=None)
+alignment = clustalo.ClustalOmegaApp.align(binding_sites, bin_path=r'C:\Users\Rickman\Documents\GitHub\Labrotation\clustal-omega-1.2.2-win64\clustalo.exe', matrix=None)
 fig = plt.figure(figsize=(4.5, 4.0))
 ax = fig.add_subplot(111)
 graphics.plot_alignment_similarity_based(

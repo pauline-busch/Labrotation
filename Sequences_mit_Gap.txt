@@ -1,9 +1,0 @@
-> seq1
--GTCF
-
-> seq2
-AG-AF
-
-> seq3
-ACCFF
-

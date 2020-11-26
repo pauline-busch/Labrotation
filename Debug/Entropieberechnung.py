@@ -1,5 +1,5 @@
 import numpy as np
-import time
+import timeit
 import matplotlib.pyplot as plt
 import biotite.sequence as seq
 import biotite.sequence.io.fasta as fasta
@@ -7,18 +7,74 @@ import biotite.sequence.io.genbank as gb
 import biotite.sequence.graphics as graphics
 import biotite.application.clustalo as clustalo
 import biotite.database.entrez as entrez
+from biotite.visualize import set_font_size_in_coord
+from biotite.sequence.alphabet import LetterAlphabet
+from biotite.sequence.graphics.colorschemes import get_color_scheme
 
-"""def _get_entropy(sequences):
-    
-    start = time.time_ns()
+def plot_sequence_logo(axes, alignment, scheme=None, **kwargs):
 
+    from matplotlib.text import Text
+
+    sequences = alignment.sequences
     alphabet = sequences[0].get_alphabet()
-    freq = np.zeros((len(sequences[0].code), len(alphabet)))
+    for seq in sequences:
+        if seq.get_alphabet() != alphabet:
+            raise ValueError("Alphabets of the sequences in the alignment "
+                             "are not equal")
+    if not isinstance(alphabet, LetterAlphabet):
+        raise TypeError("The sequences' alphabet must be a letter alphabet")
 
-    for i in range(len(sequences[0].code)):
-        for j in range(len(sequences)):
-            code = sequences[j].code[i]
-            freq[i, code] += 1
+    if scheme is None:
+        colors = get_color_scheme("buried", alphabet)
+    elif isinstance(scheme, str):
+        colors = get_color_scheme(scheme, alphabet)
+    else:
+        colors = scheme
+    
+    # 'color' and 'size' property is not passed on to text
+    kwargs.pop("color", None)
+    kwargs.pop("size",  None)
+    
+    frequencies, entropies, max_entropy = _get_entropy(alignment)
+    stack_heights = (max_entropy - entropies)
+    symbols_heights = stack_heights[:, np.newaxis] * frequencies
+    index_order = np.argsort(symbols_heights, axis=1)
+    for i in range(symbols_heights.shape[0]):
+        # Iterate over the alignment columns
+        index_order = np.argsort(symbols_heights)
+        start_height = 0
+        for j in index_order[i]:
+            # Stack the symbols at position on top of the preceeding one
+            height = symbols_heights[i,j]
+            if height > 0:
+                symbol = alphabet.decode(j)
+                text = axes.text(
+                    i+0.5, start_height, symbol,
+                    ha="left", va="bottom", color=colors[j],
+                    # Best results are obtained with this font size
+                    size=1,
+                    **kwargs
+                )
+                text.set_clip_on(True)
+                set_font_size_in_coord(text, width=1, height=height)
+                start_height += height
+    
+    axes.set_xlim(0.5, len(alignment)+0.5)
+    axes.set_ylim(0, max_entropy)
+
+
+def _get_entropy(alignment):
+
+    alphabet = alignment.sequences[0].get_alphabet()
+    trace = alignment.trace
+    sequences = alignment.sequences
+    freq = np.zeros((len(trace), len(alphabet)))
+    for i in range(trace.shape[0]):
+        for j in range(trace.shape[1]):
+            index = trace[i,j]
+            if index != -1:
+                code = sequences[j].code[index]
+                freq[i, code] += 1
     freq = freq / np.sum(freq, axis=1)[:, np.newaxis]
     # 0 * log2(0) = 0 -> Convert NaN to 0
     no_zeros = freq != 0
@@ -28,20 +84,16 @@ import biotite.database.entrez as entrez
     entropies = -np.sum(pre_entropies, axis=1)
     max_entropy = np.log2(len(alphabet))
 
-    end = time.time_ns()
+    end = timeit.default_timer()
     print(end - start)
 
-    return freq, entropies, max_entropy"""
+    print(entropies)
+    return freq, entropies, max_entropy
+
+start = timeit.default_timer()
 
 alignment = fasta.FastaFile.read(r"C:\Users\Rickman\Documents\GitHub\Labrotation\alan_sequences_aligned_squashed.txt")
 alignment = fasta.get_alignment(alignment)
-#print(alignment)
-
-"""for seq_str in alignment.get_gapped_sequences():
-    print(seq_str)"""
-
-
-"""print(_get_entropy(sequences))"""
 
 fig = plt.figure(figsize=(8.0, 3.0))
 ax = fig.add_subplot(111)

@@ -1,12 +1,10 @@
 import numpy as np
 import timeit
+import csv
 import matplotlib.pyplot as plt
 import biotite.sequence as seq
 import biotite.sequence.io.fasta as fasta
 import biotite.sequence.io.genbank as gb
-import biotite.sequence.graphics as graphics
-import biotite.application.clustalo as clustalo
-import biotite.database.entrez as entrez
 from biotite.visualize import set_font_size_in_coord
 from biotite.sequence.alphabet import LetterAlphabet
 from biotite.sequence.graphics.colorschemes import get_color_scheme
@@ -62,7 +60,6 @@ def plot_sequence_logo(axes, alignment, scheme=None, **kwargs):
     axes.set_xlim(0.5, len(alignment)+0.5)
     axes.set_ylim(0, max_entropy)
 
-
 def _get_entropy(alignment):
 
     alphabet = alignment.sequences[0].get_alphabet()
@@ -83,21 +80,28 @@ def _get_entropy(alignment):
         = freq[no_zeros] * np.log2(freq[no_zeros])
     entropies = -np.sum(pre_entropies, axis=1)
     max_entropy = np.log2(len(alphabet))
+    
+    with open('Entropies.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=' ',
+                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(['Residue', 'Entropy'])
+        count = 1
+        for entropy in entropies:
+            writer.writerow([count, entropy])
+            count += 1
 
     end = timeit.default_timer()
     print(end - start)
-
-    print(entropies)
     return freq, entropies, max_entropy
 
 start = timeit.default_timer()
 
-alignment = fasta.FastaFile.read(r"C:\Users\Rickman\Documents\GitHub\Labrotation\alan_sequences_aligned_squashed.txt")
+alignment = fasta.FastaFile.read(r"C:\Users\Erik\Documents\GitHub\Labrotation\alan_sequences_aligned_squashed.txt")
 alignment = fasta.get_alignment(alignment)
 
 fig = plt.figure(figsize=(8.0, 3.0))
 ax = fig.add_subplot(111)
-graphics.plot_sequence_logo(ax, alignment)
+plot_sequence_logo(ax, alignment)
 ax.set_xticks([5,10,15,20])
 ax.set_xlabel("Residue position")
 ax.set_ylabel("Bits")
@@ -108,3 +112,6 @@ fig.tight_layout()
 # sphinx_gallery_thumbnail_number = 2
 
 plt.show()
+
+
+

@@ -1,12 +1,9 @@
 import numpy as np
 import timeit
+import csv
 import matplotlib.pyplot as plt
 import biotite.sequence as seq
 import biotite.sequence.io.fasta as fasta
-import biotite.sequence.io.genbank as gb
-import biotite.sequence.graphics as graphics
-import biotite.application.clustalo as clustalo
-import biotite.database.entrez as entrez
 from biotite.visualize import set_font_size_in_coord
 from biotite.sequence.alphabet import LetterAlphabet
 from biotite.sequence.graphics.colorschemes import get_color_scheme
@@ -31,7 +28,6 @@ def plot_sequence_logo(axes, alignment, scheme=None, **kwargs):
     else:
         colors = scheme
     
-    # 'color' and 'size' property is not passed on to text
     kwargs.pop("color", None)
     kwargs.pop("size",  None)
     
@@ -40,18 +36,15 @@ def plot_sequence_logo(axes, alignment, scheme=None, **kwargs):
     symbols_heights = stack_heights[:, np.newaxis] * frequencies
     index_order = np.argsort(symbols_heights, axis=1)
     for i in range(symbols_heights.shape[0]):
-        # Iterate over the alignment columns
         index_order = np.argsort(symbols_heights)
         start_height = 0
         for j in index_order[i]:
-            # Stack the symbols at position on top of the preceeding one
             height = symbols_heights[i,j]
             if height > 0:
                 symbol = alphabet.decode(j)
                 text = axes.text(
                     i+0.5, start_height, symbol,
                     ha="left", va="bottom", color=colors[j],
-                    # Best results are obtained with this font size
                     size=1,
                     **kwargs
                 )
@@ -76,7 +69,6 @@ def _get_entropy(alignment):
                 code = sequences[j].code[index]
                 freq[i, code] += 1
     freq = freq / np.sum(freq, axis=1)[:, np.newaxis]
-    # 0 * log2(0) = 0 -> Convert NaN to 0
     no_zeros = freq != 0
     pre_entropies = np.zeros(freq.shape)
     pre_entropies[no_zeros] \
@@ -84,27 +76,33 @@ def _get_entropy(alignment):
     entropies = -np.sum(pre_entropies, axis=1)
     max_entropy = np.log2(len(alphabet))
 
+    with open('Entropies.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=' ',
+                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(['Residue', 'Entropy'])
+        count = 1
+        for entropy in entropies:
+            writer.writerow([count, entropy])
+            count += 1
+
     end = timeit.default_timer()
     print(end - start)
 
-    print(entropies)
     return freq, entropies, max_entropy
 
 start = timeit.default_timer()
 
-alignment = fasta.FastaFile.read(r"C:\Users\Rickman\Documents\GitHub\Labrotation\alan_sequences_aligned_squashed.txt")
+alignment = fasta.FastaFile.read(r"C:\Users\Rickman\Documents\GitHub\Labrotation\BigTestFile.txt")
 alignment = fasta.get_alignment(alignment)
 
 fig = plt.figure(figsize=(8.0, 3.0))
 ax = fig.add_subplot(111)
-graphics.plot_sequence_logo(ax, alignment)
+plot_sequence_logo(ax, alignment)
 ax.set_xticks([5,10,15,20])
 ax.set_xlabel("Residue position")
 ax.set_ylabel("Bits")
-# Only show left and bottom spine
 ax.spines["right"].set_visible(False)
 ax.spines["top"].set_visible(False)
 fig.tight_layout()
-# sphinx_gallery_thumbnail_number = 2
 
-plt.show()
+"""plt.show()"""

@@ -92,7 +92,7 @@ def _get_entropy(alignment):
 
 start = timeit.default_timer()
 
-alignment = fasta.FastaFile.read(r"C:\Users\Rickman\Documents\GitHub\Labrotation\BigTestFile.txt")
+alignment = fasta.FastaFile.read(r"C:\Users\Rickman\Documents\GitHub\Labrotation\Testsequenzen\10000x10000.txt")
 alignment = fasta.get_alignment(alignment)
 
 fig = plt.figure(figsize=(8.0, 3.0))

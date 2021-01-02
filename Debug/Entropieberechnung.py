@@ -1,12 +1,12 @@
 import numpy as np
 import timeit
 import csv
-import matplotlib.pyplot as plt
 import biotite.sequence as seq
 import biotite.sequence.io.fasta as fasta
-from biotite.visualize import set_font_size_in_coord
 from biotite.sequence.alphabet import LetterAlphabet
-from biotite.sequence.graphics.colorschemes import get_color_scheme
+"""import matplotlib.pyplot as plt
+from biotite.visualize import set_font_size_in_coord
+from biotite.sequence.graphics.colorschemes import get_color_scheme"""
 
 
 def _get_entropy(alignment):
@@ -48,7 +48,7 @@ while i <= 9:
 
     start = timeit.default_timer()
 
-    alignment = fasta.FastaFile.read(r"C:\Users\Rickman\Documents\GitHub\Labrotation\Testsequenzen\500x10000.txt")
+    alignment = fasta.FastaFile.read(r"C:\Users\Rickman\Documents\GitHub\Labrotation\Testsequenzen\alan_sequences_aligned_squashed.txt")
     alignment = fasta.get_alignment(alignment)
 
     frequencies, entropies, max_entropy = _get_entropy(alignment)

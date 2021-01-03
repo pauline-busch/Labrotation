@@ -44,11 +44,11 @@ def _get_entropy(alignment):
     return freq, entropies, max_entropy
 
 i = 0
-while i <= 9:
+while i <= 0:
 
     start = timeit.default_timer()
 
-    alignment = fasta.FastaFile.read(r"C:\Users\Rickman\Documents\GitHub\Labrotation\Testsequenzen\alan_sequences_aligned_squashed.txt")
+    alignment = fasta.FastaFile.read(r"C:\Users\Rickman\Documents\GitHub\Labrotation\Testsequenzen\3000x10000.txt")
     alignment = fasta.get_alignment(alignment)
 
     frequencies, entropies, max_entropy = _get_entropy(alignment)
